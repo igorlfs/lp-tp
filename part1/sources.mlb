@@ -1,0 +1,9 @@
+(* Lista de Arquivos para o Millet (LSP) funcionar como projeto, e não por arquivo único *)
+(* Isso é interessante porque, para ignorar alguns erros (e.g., ';'), é necessário ter um millet.toml *)
+(* Que, automaticamente configura o Millet para rodar como projeto *)
+./Absyn.sml
+./Environ.sml
+./Parse.sml
+./PlcParserAux.sml
+./testParser.sml
+./testParserCases.sml

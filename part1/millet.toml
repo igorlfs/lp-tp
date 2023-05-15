@@ -1,0 +1,6 @@
+version = 1
+# Obrigatório, contém uma lista dos arquivos
+workspace.root = "./sources.mlb"
+[diagnostics]
+# Não reclame de ';'
+4017.severity = "ignore"
