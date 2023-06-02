@@ -13,3 +13,7 @@ exception CallTypeMisM
 exception NotFunc
 exception ListOutOfRange
 exception OpNonList
+
+fun teval (IntT, _) = IntT
+    | teval (ConB, _) = ConB
+    | 
