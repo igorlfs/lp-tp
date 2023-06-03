@@ -98,9 +98,6 @@ fun teval ((ConI _), _) = IntT
         in
             r
         end
-
-
-
     | teval ((If(cond, exp1, exp2)), (e : plcType env)) = 
         
         let 
@@ -111,3 +108,4 @@ fun teval ((ConI _), _) = IntT
             if cond <> BoolT then raise IfCondNotBool else
                 if exp1Type <> exp2Type then raise DiffBrTypes else exp1Type
         end
+    | teval ((Match(exp1, optionList)), (e : plcType env)) = IntT (*fazer match*)
