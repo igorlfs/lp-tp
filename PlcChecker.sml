@@ -28,7 +28,7 @@ fun teval ((ConI _), _) = IntT
     | teval ((Var v), (e : plcType env)) = lookup e v 
     | teval ((Let(s, exp1, exp2)), (e : plcType env)) =
         let 
-            val newEnv = (s, (teval(exp1, e)))::e
+            val newEnv = (s, teval(exp1, e))::e
         in
             teval(exp2, newEnv)
         end
@@ -37,6 +37,15 @@ fun teval ((ConI _), _) = IntT
             val newEnv = (s1, t1)::e
         in
             teval(exp2, newEnv)
+        end
+    | teval ((If(cond, exp1, exp2)), (e : plcType env)) = 
+        val cond = teval(exp1, e);
+        if cond != BoolT then raise IfCondNotBool;
+        let 
+            val exp1Type = teval(exp1, e);
+            val exp2Type = teval(exp2, e);
+        in 
+            if exp1Type != exp2Type raise DiffBrTypes else exp1Type
         end
     | teval ((Prim1(op, exp)), (e : plcType env)) =
         let
@@ -48,3 +57,4 @@ fun teval ((ConI _), _) = IntT
         in
             IntT
         end
+    | _ = IntT
