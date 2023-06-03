@@ -26,24 +26,25 @@ fun teval ((ConI _), _) = IntT
                 | _ => raise EmptySeq
         )
     | teval ((Var v), (e : plcType env)) = lookup e v 
-    | teval ((Let(s, exp1, exp2)), (e : plcType env)) = 
+    | teval ((Let(s, exp1, exp2)), (e : plcType env)) =
         let 
             val newEnv = (s, (teval(exp1, e)))::e
         in
             teval(exp2, newEnv)
         end
-   | teval ((Letrec(s1, t1, s2, t2, exp1, exp2)), (e : plcType env)) = 
+    | teval ((Letrec(s1, t1, s2, t2, exp1, exp2)), (e : plcType env)) =
         let
             val newEnv = (s1, t1)::e
         in
             teval(exp2, newEnv)
         end
-    | teval ((Prim1(op, exp)), (e : plcType env)) = 
+    | teval ((Prim1(op, exp)), (e : plcType env)) =
         let
-            val expType = teval(exp, e)
+            val expType = teval(exp, e);
+            val r =
+                if op = "-" then if expType = IntT then IntT else raise UnknownType
+                else if op = "!" then if expType = BoolT then BoolT else raise UnknownType
+                else raise UnknownType
         in
-            case op of
-                "-" => if expType = IntT then IntT else raise UnknownType
-                | "!" => if expType = BoolT then BoolT else raise UnknownType
-                | _ => raise UnknownType
+            IntT
         end
