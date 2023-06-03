@@ -22,7 +22,7 @@ fun teval ((ConI _), _) = IntT
     | teval ((ESeq seq), _) = 
         ( 
             case seq of
-                SeqT x => SeqT x
+                SeqT t => t
                 | _ => raise EmptySeq
         )
     | teval ((Var v), (e : plcType env)) = lookup e v 
@@ -38,23 +38,76 @@ fun teval ((ConI _), _) = IntT
         in
             teval(exp2, newEnv)
         end
-    | teval ((If(cond, exp1, exp2)), (e : plcType env)) = 
-        val cond = teval(exp1, e);
-        if cond != BoolT then raise IfCondNotBool;
+    | teval ((Prim1(oper, exp)), (e : plcType env)) =
+        let
+            val expType = teval(exp, e);
+            val r = case oper of
+                "-" => if expType = IntT then IntT else raise UnknownType
+                | "!" => if expType = BoolT then BoolT else raise UnknownType
+                | "hd" => 
+                    (
+                        case expType of
+                            SeqT t => t
+                            | _ => raise UnknownType
+                    )
+                | "tl" => 
+                    (
+                        case expType of 
+                            SeqT t => SeqT t
+                            | _ => raise UnknownType
+                    )
+                | "ise" => (*incompleto*)
+                    (
+                        case expType of
+                            SeqT t => BoolT
+                            | _ => raise UnknownType
+                    )
+                | "print" => ListT []
+                | _ => raise UnknownType
+        in
+            r
+        end
+
+    | teval ((Prim2(oper, exp1, exp2)), (e : plcType env)) =
         let 
             val exp1Type = teval(exp1, e);
             val exp2Type = teval(exp2, e);
-        in 
-            if exp1Type != exp2Type raise DiffBrTypes else exp1Type
-        end
-    | teval ((Prim1(op, exp)), (e : plcType env)) =
-        let
-            val expType = teval(exp, e);
-            val r =
-                if op = "-" then if expType = IntT then IntT else raise UnknownType
-                else if op = "!" then if expType = BoolT then BoolT else raise UnknownType
-                else raise UnknownType
+            val r = case oper of
+                "&&" => if exp1Type = BoolT andalso exp2Type = BoolT then BoolT else raise UnknownType
+                | "::" => 
+                (
+                    case exp2Type of
+                        SeqT t => if exp1Type = t then t else raise UnknownType
+                        | _ => raise UnknownType
+                )
+                | ("+" | "-" | "*" | "/") => if exp1Type = IntT andalso exp2Type = IntT then IntT else raise UnknownType
+                | ("<" | "<=") => if exp1Type = IntT andalso exp2Type = IntT then IntT else raise UnknownType
+                | ("=" | "!=") => if exp1Type <> exp2Type then raise NotEqTypes else
+                    (
+                        case exp1Type of
+                            IntT => BoolT
+                            | BoolT => BoolT
+                            | (ListT []) => BoolT
+                            | SeqT IntT => BoolT
+                            | SeqT BoolT => BoolT
+                            | (SeqT (ListT [])) => BoolT (*incompleto, ainda falta validar tuplas , to meio perdido nessa parte ainda*)
+                    )
+                | ";" => exp2Type
+                | _ => raise UnknownType
+
         in
-            IntT
+            r
         end
-    | _ = IntT
+
+
+
+    | teval ((If(cond, exp1, exp2)), (e : plcType env)) = 
+        
+        let 
+            val cond = teval(exp1, e);
+            val exp1Type = teval(exp1, e);
+            val exp2Type = teval(exp2, e)
+        in 
+            if cond <> BoolT then raise IfCondNotBool else
+                if exp1Type <> exp2Type then raise DiffBrTypes else exp1Type
+        end
