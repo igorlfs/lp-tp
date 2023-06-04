@@ -100,11 +100,11 @@ fun teval ((ConI _), _) = IntT
         end
     | teval ((If(cond, exp1, exp2)), (e : plcType env)) = 
         let 
-            val cond = teval(exp1, e);
+            val condType = teval(cond, e);
             val exp1Type = teval(exp1, e);
             val exp2Type = teval(exp2, e)
         in 
-            if cond <> BoolT then raise IfCondNotBool else
+            if condType <> BoolT then raise IfCondNotBool else
                 if exp1Type <> exp2Type then raise DiffBrTypes else exp1Type
         end
     | teval ((Match(exp1, optionsList)), (e : plcType env)) = (*aqui, checar tambem casos de _*)
