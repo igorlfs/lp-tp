@@ -69,7 +69,6 @@ fun teval ((ConI _), _) = IntT
         in
             r
         end
-
     | teval ((Prim2(oper, exp1, exp2)), (e : plcType env)) =
         let 
             val exp1Type = teval(exp1, e);
@@ -130,7 +129,6 @@ fun teval ((ConI _), _) = IntT
                                 | true => exp1Type
                         end
             end
-    
     | teval ((Call(exp1, exp2)), (e : plcType env)) =
         let 
             val exp1Type = teval(exp1, e);
@@ -163,4 +161,3 @@ fun teval ((ConI _), _) = IntT
         in
             FunT(t, expType)
         end
-             
