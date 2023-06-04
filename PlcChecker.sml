@@ -161,5 +161,4 @@ fun teval ((ConI _), _) = IntT
         in
             FunT(t, expType)
         end
-                
-
+             

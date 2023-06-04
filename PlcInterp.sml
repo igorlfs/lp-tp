@@ -6,4 +6,6 @@ exception TLEmptySeq
 exception ValueNotFoundInMatch
 exception NotAFunc
 
-fun eval _ = 5;
+val n = 7;
+
+fun eval (exp, env) = IntV n;
