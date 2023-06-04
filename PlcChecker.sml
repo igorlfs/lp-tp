@@ -32,7 +32,7 @@ fun teval ((ConI _), _) = IntT
         in
             teval(exp2, newEnv)
         end
-    | teval ((Letrec(s1, t1, s2, t2, exp1, exp2)), (e : plcType env)) = (*aq com ctz ta errado*)
+    | teval ((Letrec(s1, t1, s2, t2, exp1, exp2)), (e : plcType env)) =
         let
             val newEnv = (s1, FunT(t2, t1))::(s2, t2)::e;
             val exp1Type  = teval(exp1, newEnv);
