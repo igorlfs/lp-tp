@@ -6,6 +6,4 @@ exception TLEmptySeq
 exception ValueNotFoundInMatch
 exception NotAFunc
 
-val n = 7;
-
-fun eval (exp, env) = IntV n;
+fun eval (ConI(n), (e : plcType env)) = IntV(5);
