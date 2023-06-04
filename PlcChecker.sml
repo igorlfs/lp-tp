@@ -32,7 +32,7 @@ fun teval ((ConI _), _) = IntT
         in
             teval(exp2, newEnv)
         end
-    | teval ((Letrec(s1, t1, s2, t2, exp1, exp2)), (e : plcType env)) =
+    | teval ((Letrec(s1, t1, s2, t2, exp1, exp2)), (e : plcType env)) = (*aq com ctz ta errado*)
         let
             val newEnv = (s1, t1)::e
         in
@@ -99,7 +99,6 @@ fun teval ((ConI _), _) = IntT
             r
         end
     | teval ((If(cond, exp1, exp2)), (e : plcType env)) = 
-        
         let 
             val cond = teval(exp1, e);
             val exp1Type = teval(exp1, e);
@@ -108,4 +107,59 @@ fun teval ((ConI _), _) = IntT
             if cond <> BoolT then raise IfCondNotBool else
                 if exp1Type <> exp2Type then raise DiffBrTypes else exp1Type
         end
-    | teval ((Match(exp1, optionList)), (e : plcType env)) = IntT (*fazer match*)
+    | teval ((Match(exp1, optionsList)), (e : plcType env)) = (*aqui, checar tambem casos de _*)
+        if optionsList = [] then raise NoMatchResults else
+            let 
+                val optionsTypes = map (fn tup => teval((#2 tup), e)) optionsList;
+                val firstOptionType = hd optionsTypes;
+                val allOptionsSameType = List.all (fn x => x = firstOptionType) optionsTypes
+            in
+                case allOptionsSameType of
+                    false => raise MatchResTypeDiff
+                    | true => 
+                        let
+                            val exp1Type = teval(exp1, e);
+                            val optionsExpsTypes = map (fn tup => teval((#2 tup), e)) optionsList;
+                            val firstOptionExpType = hd optionsExpsTypes;
+                            val allOptionsExpsSameType = List.all (fn x => x = firstOptionExpType) optionsExpsTypes
+                        in
+                            case allOptionsExpsSameType of
+                                false => raise MatchCondTypesDiff
+                                | true => exp1Type
+                        end
+            end
+    
+    | teval ((Call(exp1, exp2)), (e : plcType env)) =
+        let 
+            val exp1Type = teval(exp1, e);
+            val exp2Type = teval(exp2, e)
+        in
+            case exp1Type of
+                FunT(t1, t2) => if t1 <> exp2Type then raise CallTypeMisM else t2
+                | _ => raise NotFunc
+        end
+    | teval ((List(expList)), (e : plcType env)) = 
+        let
+            val listTypes = List.map (fn x => teval(x, e)) expList
+        in
+            ListT(listTypes)
+        end    
+    | teval ((Item(n, exp)), (e : plcType env)) =
+        let 
+            val expType = teval(exp, e);
+        in
+            case expType of
+                ListT([]) => raise ListOutOfRange
+                | ListT(listTypes) => 
+                    if n > (List.length listTypes) orelse n < 1 then raise ListOutOfRange else List.nth(listTypes, n - 1)
+                | _ => raise OpNonList
+        end
+    | teval((Anon(t, s, exp)), (e : plcType env)) =
+        let
+            val newEnv = (s, t)::e;
+            val expType = teval(exp, newEnv)
+        in
+            FunT(t, expType)
+        end
+                
+
