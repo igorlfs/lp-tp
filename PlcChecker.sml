@@ -58,7 +58,7 @@ fun teval ((ConI _), _) = IntT
                             SeqT t => SeqT t
                             | _ => raise UnknownType
                     )
-                | "ise" => (*incompleto*)
+                | "ise" =>
                     (
                         case expType of
                             SeqT t => BoolT
@@ -84,15 +84,18 @@ fun teval ((ConI _), _) = IntT
                 | ("+" | "-" | "*" | "/") => if exp1Type = IntT andalso exp2Type = IntT then IntT else raise UnknownType
                 | ("<" | "<=") => if exp1Type = IntT andalso exp2Type = IntT then IntT else raise UnknownType
                 | ("=" | "!=") => if exp1Type <> exp2Type then raise NotEqTypes else
-                    (
-                        case exp1Type of
-                            IntT => BoolT
-                            | BoolT => BoolT
-                            | (ListT []) => BoolT
-                            | SeqT IntT => BoolT
-                            | SeqT BoolT => BoolT
-                            | (SeqT (ListT [])) => BoolT (*incompleto, ainda falta validar tuplas , to meio perdido nessa parte ainda*)
-                    )
+                    let
+                        fun isEqType t = 
+                        (
+                            case t of 
+                        (IntT | BoolT | ListT([]) | SeqT(IntT) | SeqT(BoolT) | SeqT(ListT [])) => true
+                        | ListT(typeList) => List.all (fn x => isEqType(x)) typeList
+                        | _ => false
+                        )
+                    in
+                        if isEqType(exp1Type) then BoolT else raise UnknownType
+                    end
+                    
                 | ";" => exp2Type
                 | _ => raise UnknownType
 
@@ -154,7 +157,7 @@ fun teval ((ConI _), _) = IntT
                     if n > (List.length listTypes) orelse n < 1 then raise ListOutOfRange else List.nth(listTypes, n - 1)
                 | _ => raise OpNonList
         end
-    | teval((Anon(t, s, exp)), (e : plcType env)) =
+    | teval ((Anon(t, s, exp)), (e : plcType env)) =
         let
             val newEnv = (s, t)::e;
             val expType = teval(exp, newEnv)
