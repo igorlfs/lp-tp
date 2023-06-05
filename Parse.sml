@@ -62,7 +62,6 @@ struct
         )
     end
 
-
   val fromString = lexerToParser o stringToLexer
   val fromFile = lexerToParser o fileToLexer
 

@@ -17,6 +17,8 @@ use "Parse.sml";
 use "PlcInterp.sml";
 use "PlcChecker.sml";
 
+open PlcFrontEnd;
+
 fun run exp = 
     let
         val t_env = [];

@@ -95,10 +95,8 @@ fun teval ((ConI _), _) = IntT
                     in
                         if isEqType(exp1Type) then BoolT else raise UnknownType
                     end
-                    
                 | ";" => exp2Type
                 | _ => raise UnknownType
-
         in
             r
         end
@@ -111,7 +109,7 @@ fun teval ((ConI _), _) = IntT
             if condType <> BoolT then raise IfCondNotBool else
                 if exp1Type <> exp2Type then raise DiffBrTypes else exp1Type
         end
-    | teval ((Match(exp1, optionsList)), (e : plcType env)) = (*aqui, checar tambem casos de _*)
+    | teval ((Match(exp1, optionsList)), (e : plcType env)) =
         if optionsList = [] then raise NoMatchResults else
             let 
                 val optionsTypes = map (fn tup => teval((#2 tup), e)) optionsList;
