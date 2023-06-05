@@ -1,8 +1,5 @@
 (* PlcChecker *)
 
-use "Environ.sml";
-use "Absyn.sml";
-
 exception EmptySeq
 exception UnknownType
 exception NotEqTypes
@@ -38,7 +35,7 @@ fun teval ((ConI _), _) = IntT
             val exp1Type  = teval(exp1, newEnv);
             val exp2Type = teval(exp2, newEnv)
         in
-            if exp1Type = t1 then exp2Type else raise UnknownType
+            if exp1Type = t1 then exp2Type else raise WrongRetType
         end
     | teval ((Prim1(oper, exp)), (e : plcType env)) =
         let
@@ -82,7 +79,7 @@ fun teval ((ConI _), _) = IntT
                         | _ => raise UnknownType
                 )
                 | ("+" | "-" | "*" | "/") => if exp1Type = IntT andalso exp2Type = IntT then IntT else raise UnknownType
-                | ("<" | "<=") => if exp1Type = IntT andalso exp2Type = IntT then IntT else raise UnknownType
+                | ("<" | "<=") => if exp1Type = IntT andalso exp2Type = IntT then BoolT else raise UnknownType
                 | ("=" | "!=") => if exp1Type <> exp2Type then raise NotEqTypes else
                     let
                         fun isEqType t = 
