@@ -43,5 +43,5 @@ fun run exp =
     | NotFunc => "NotFunc: o objeto que foi utilizado para se chamar algo não é uma função"
     | ListOutOfRange => "ListOutOfRange: foi feita uma tentativa de acessar um elemento fora dos limites de uma lista"
     | OpNonList => "OpNonList: tentaiva de se acessar um elemento de uma expressão que não é uma lista"
-    | SymbolNotFound => "SymbolNotFound: Símbolo não encontrado"
+    | SymbolNotFound => "SymbolNotFound: Símbolo não encontradono ambiente"
     | _ => "Erro desconhecido"
