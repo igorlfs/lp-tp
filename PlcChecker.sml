@@ -58,7 +58,7 @@ fun teval ((ConI _), _) = IntT
                 | "ise" =>
                     (
                         case expType of
-                            SeqT t => BoolT
+                            SeqT _ => BoolT
                             | _ => raise UnknownType
                     )
                 | "print" => ListT []
@@ -85,12 +85,12 @@ fun teval ((ConI _), _) = IntT
                         fun isEqType t = 
                         (
                             case t of 
-                        (IntT | BoolT | ListT([]) | SeqT(IntT) | SeqT(BoolT) | SeqT(ListT [])) => true
-                        | ListT(typeList) => List.all (fn x => isEqType(x)) typeList
+                        (IntT | BoolT | ListT [] | SeqT IntT | SeqT BoolT | SeqT(ListT [])) => true
+                        | ListT typeList => List.all (fn x => isEqType x) typeList
                         | _ => false
                         )
                     in
-                        if isEqType(exp1Type) then BoolT else raise UnknownType
+                        if isEqType exp1Type then BoolT else raise UnknownType
                     end
                 | ";" => exp2Type
                 | _ => raise UnknownType
@@ -107,25 +107,22 @@ fun teval ((ConI _), _) = IntT
                 if exp1Type <> exp2Type then raise DiffBrTypes else exp1Type
         end
     | teval ((Match(exp1, optionsList)), (e : plcType env)) =
-        if optionsList = [] then raise NoMatchResults else
+        if List.null optionsList then raise NoMatchResults else
             let 
                 val optionsTypes = map (fn tup => teval((#2 tup), e)) optionsList;
                 val firstOptionType = hd optionsTypes;
                 val allOptionsSameType = List.all (fn x => x = firstOptionType) optionsTypes
             in
-                case allOptionsSameType of
-                    false => raise MatchResTypeDiff
-                    | true => 
-                        let
-                            val exp1Type = teval(exp1, e);
-                            val optionsExpsTypes = map (fn tup => teval((#2 tup), e)) optionsList;
-                            val firstOptionExpType = hd optionsExpsTypes;
-                            val allOptionsExpsSameType = List.all (fn x => x = firstOptionExpType) optionsExpsTypes
-                        in
-                            case allOptionsExpsSameType of
-                                false => raise MatchCondTypesDiff
-                                | true => exp1Type
-                        end
+                if allOptionsSameType then 
+                    let
+                        val exp1Type = teval(exp1, e);
+                        val optionsExpsTypes = map (fn tup => teval((#2 tup), e)) optionsList;
+                        val firstOptionExpType = hd optionsExpsTypes;
+                        val allOptionsExpsSameType = List.all (fn x => x = firstOptionExpType) optionsExpsTypes
+                    in
+                        if allOptionsExpsSameType then exp1Type else raise MatchCondTypesDiff
+                    end
+                else raise MatchResTypeDiff
             end
     | teval ((Call(exp1, exp2)), (e : plcType env)) =
         let 
@@ -136,19 +133,19 @@ fun teval ((ConI _), _) = IntT
                 FunT(t1, t2) => if t1 <> exp2Type then raise CallTypeMisM else t2
                 | _ => raise NotFunc
         end
-    | teval ((List(expList)), (e : plcType env)) = 
+    | teval ((List expList), (e : plcType env)) = 
         let
             val listTypes = List.map (fn x => teval(x, e)) expList
         in
-            ListT(listTypes)
+            ListT listTypes
         end    
     | teval ((Item(n, exp)), (e : plcType env)) =
         let 
             val expType = teval(exp, e);
         in
             case expType of
-                ListT([]) => raise ListOutOfRange
-                | ListT(listTypes) => 
+                ListT[] => raise ListOutOfRange
+                | ListT listTypes => 
                     if n > (List.length listTypes) orelse n < 1 then raise ListOutOfRange else List.nth(listTypes, n - 1)
                 | _ => raise OpNonList
         end

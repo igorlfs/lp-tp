@@ -1,6 +1,3 @@
-use "Environ.sml";
-use "Absyn.sml";
-
 (* Well-typed *)
 
 If (Prim2 ("=", ConI 11, ConI 12), ConI 1, ConI 0);
