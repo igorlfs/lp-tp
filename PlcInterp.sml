@@ -91,3 +91,4 @@ fun eval ((ConI(n)), (_)) = IntV(n)
                     )
                 | _ => raise Impossible
         end
+    | eval ((Prim2(oper, exp1, exp2)), (e : plcVal env)) = IntV(5);
