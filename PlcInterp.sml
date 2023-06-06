@@ -1,7 +1,7 @@
 (* PlcInterp *)
 
-use "Environ.sml"
-use "Absyn.sml"
+use "Environ.sml";
+use "Absyn.sml";
 
 exception Impossible
 exception HDEmptySeq
@@ -25,4 +25,69 @@ fun eval ((ConI(n)), (_)) = IntV(n)
         in
             eval(exp2, newEnv)
         end
-    | eval _ = IntV(5)
+    | eval (Prim1(oper, exp), (e : plcVal env)) = 
+        let
+            val expVal = eval(exp, e)
+        in
+            case expVal of
+                IntV(i) => 
+                    (
+                        case oper of 
+                            "-" => IntV(~i)
+                            | "print" => 
+                                let
+                                    val printVal = print(val2string(expVal) ^ "\n")
+                                in
+                                    ListV([])
+                                end
+                            | _ => raise Impossible
+                    )
+                | BoolV(b) =>
+                    (
+                        case oper of
+                            "!" => BoolV(not b)
+                            | "print" =>
+                                let
+                                    val printVal = print(val2string(expVal) ^ "\n")
+                                in
+                                    ListV([])
+                                end                                
+                            | _ => raise Impossible
+                    )
+                | SeqV(seq) =>
+                    (
+                        case oper of
+                            "hd" => 
+                                (
+                                    case seq of
+                                        [] => raise HDEmptySeq
+                                        | _ => hd seq
+                                )
+                            | "tl" => 
+                                (
+                                    case seq of
+                                        [] => raise TLEmptySeq
+                                        | _ => SeqV(tl seq)
+                                )
+                            | "ise" => BoolV(seq = [])
+                            | "print" =>
+                                let
+                                    val printVal = print(val2string(expVal) ^ "\n")
+                                in
+                                    ListV([])
+                                end
+                            | _ => raise Impossible
+                    )
+                | ListV(l) => 
+                    (
+                        case oper of
+                            "print" =>
+                                let
+                                    val printVal = print(val2string(expVal) ^ "\n")
+                                in
+                                    ListV([])
+                                end
+                            | _ => raise Impossible
+                    )
+                | _ => raise Impossible
+        end
