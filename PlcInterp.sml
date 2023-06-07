@@ -147,3 +147,15 @@ fun eval ((ConI(n)), (_)) = IntV(n)
                     | _ => raise Impossible
             )
         end
+    | eval((If(cond, exp1, exp2)), (e : plcVal e)) =
+        let
+            val condVal = eval(cond, e)
+        in
+            (
+                case condVal of
+                    BoolV(true) => eval(exp1, e)
+                    | BoolV(false) => eval(exp2, e)
+                    | _ => raise Impossible
+            )
+        end
+    | eval 
