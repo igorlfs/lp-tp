@@ -75,7 +75,8 @@ fun teval ((ConI _), _) = IntT
                 | "::" => 
                 (
                     case exp2Type of
-                        SeqT t => if exp1Type = t then t else raise UnknownType
+                        ListT([]) => SeqT exp1Type
+                        | SeqT t => if exp1Type = t then SeqT t else raise UnknownType
                         | _ => raise UnknownType
                 )
                 | ("+" | "-" | "*" | "/") => if exp1Type = IntT andalso exp2Type = IntT then IntT else raise UnknownType
