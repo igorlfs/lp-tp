@@ -180,11 +180,35 @@ fun eval ((ConI(n)), (_)) = IntV(n)
         in
             searchForMatch(exp1Val, optionsList)
         end
-    | eval ((Call(exp1, exp2)), (e : plcVal env)) = IntV(5)
+    | eval ((Call(exp1, exp2)), (e : plcVal env)) =
+        let
+            val exp1Val = eval(exp1, e)
+        in
+            (
+                case exp1Val of
+                    Clos(n, s, funExp, closEnv) =>
+                        let
+                            val exp2Val = eval(exp2, e);
+                            val newEnv = (s, exp2Val)::(n, exp1Val)::e
+                        in
+                            eval(funExp, newEnv)
+                        end
+                    | _ => raise Impossible
+            )
+        end
     | eval((List expList), (e : plcVal env)) =
         (
             case expList of 
                 [] => ListV([])
                 | l => ListV(List.map (fn x => eval(x, e)) expList)
         )
-
+    | eval((Item(n, exp)), (e : plcVal env)) =
+        let
+            val expVal = eval(exp, e)
+        in
+            case expVal of 
+                ListV([]) => raise Impossible
+                | ListV(l) => List.nth(l, n) 
+                | _ => raise Impossible
+        end
+    | eval((Anon(t, s, exp)), (e : plcVal env)) = Clos("", s, exp, e)
