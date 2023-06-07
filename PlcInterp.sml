@@ -147,7 +147,7 @@ fun eval ((ConI(n)), (_)) = IntV(n)
                     | _ => raise Impossible
             )
         end
-    | eval((If(cond, exp1, exp2)), (e : plcVal env)) =
+    | eval ((If(cond, exp1, exp2)), (e : plcVal env)) =
         let
             val condVal = eval(cond, e)
         in
@@ -180,3 +180,11 @@ fun eval ((ConI(n)), (_)) = IntV(n)
         in
             searchForMatch(exp1Val, optionsList)
         end
+    | eval ((Call(exp1, exp2)), (e : plcVal env)) = IntV(5)
+    | eval((List expList), (e : plcVal env)) =
+        (
+            case expList of 
+                [] => ListV([])
+                | l => ListV(List.map (fn x => eval(x, e)) expList)
+        )
+
