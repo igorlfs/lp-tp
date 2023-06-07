@@ -189,11 +189,11 @@ fun eval ((ConI(n)), (_)) = IntV(n)
                     Clos(n, s, funExp, closEnv) =>
                         let
                             val exp2Val = eval(exp2, e);
-                            val newEnv = (s, exp2Val)::(n, exp1Val)::e
+                            val newEnv = (s, exp2Val)::(n, exp1Val)::closEnv
                         in
                             eval(funExp, newEnv)
                         end
-                    | _ => raise Impossible
+                    | _ => raise NotAFunc
             )
         end
     | eval((List expList), (e : plcVal env)) =
