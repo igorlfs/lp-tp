@@ -91,4 +91,59 @@ fun eval ((ConI(n)), (_)) = IntV(n)
                     )
                 | _ => raise Impossible
         end
-    | eval ((Prim2(oper, exp1, exp2)), (e : plcVal env)) = IntV(5);
+    | eval ((Prim2(oper, exp1, exp2)), (e : plcVal env)) =
+        let
+            val exp1Val = eval(exp1, e);
+            val exp2Val = eval(exp2, e)
+        in
+            if oper = ";" then exp2Val else
+            (   
+                case (exp1Val, exp2Val) of
+                    (BoolV(b1), BoolV(b2)) => 
+                        (
+                            case oper of
+                                "&&" => BoolV(b1 andalso b2)
+                                | "=" => BoolV(b1 = b2)
+                                | "!=" => BoolV(b1 <> b2)
+                                | _ => raise Impossible
+                        )
+                    | (IntV(i1), IntV(i2)) => 
+                        (
+                            case oper of
+                                "+" => IntV(i1 + i2)
+                                | "-" => IntV(i1 - i2)
+                                | "*" => IntV(i1 * i2)
+                                | "/" => IntV(i1 div i2)
+                                | "<" => BoolV(i1 < i2)
+                                | "<=" => BoolV(i1 <= i2)
+                                | "=" => BoolV(i1 = i2)
+                                | "!=" => BoolV(i1 <> i2)
+                                | _ => raise Impossible
+                        )
+                    | (BoolV(b), SeqV(seq)) =>
+                        (
+                            case oper of
+                                "::" => SeqV(BoolV(b)::seq)
+                                | _ => raise Impossible
+                        )
+                    | (IntV(i), SeqV(seq)) => 
+                        (
+                            case oper of
+                                "::" => SeqV(IntV(i)::seq)
+                                | _ => raise Impossible
+                        )
+                    | (ListV(l), SeqV(seq)) =>
+                        (
+                            case oper of
+                                "::" => SeqV(ListV(l)::seq)
+                                | _ => raise Impossible
+                        )
+                    | (SeqV(h), SeqV(seq)) =>
+                        (
+                            case oper of
+                                "::" => SeqV(SeqV(h)::seq)
+                                | _ => raise Impossible
+                        )
+                    | _ => raise Impossible
+            )
+        end
