@@ -147,7 +147,7 @@ fun eval ((ConI(n)), (_)) = IntV(n)
                     | _ => raise Impossible
             )
         end
-    | eval((If(cond, exp1, exp2)), (e : plcVal e)) =
+    | eval((If(cond, exp1, exp2)), (e : plcVal env)) =
         let
             val condVal = eval(cond, e)
         in
@@ -158,4 +158,25 @@ fun eval ((ConI(n)), (_)) = IntV(n)
                     | _ => raise Impossible
             )
         end
-    | eval 
+    | eval ((Match(exp1, optionsList)), (e : plcVal env)) =
+        let
+            val exp1Val = eval(exp1, e);
+            fun searchForMatch(exp, optList) = 
+                (
+                    case optList of
+                        x::[] => 
+                            (
+                                case x of 
+                                    (SOME expMatch1, expMatch2) => if exp <> eval(expMatch1, e) then raise ValueNotFoundInMatch else eval(expMatch2, e)
+                                    | (NONE, expMatch2) => eval(expMatch2, e)
+                            )
+                        | x::xs => 
+                            (
+                                case x of 
+                                    (SOME expMatch1, expMatch2) => if exp <> eval(expMatch1, e) then searchForMatch(exp, xs) else eval(expMatch2, e)
+                            )
+                        | _ => raise Impossible
+                )
+        in
+            searchForMatch(exp1Val, optionsList)
+        end
