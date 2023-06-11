@@ -1,8 +1,5 @@
 (* PlcInterp *)
 
-(* use "Environ.sml";
-use "Absyn.sml"; *)
-
 exception Impossible
 exception HDEmptySeq
 exception TLEmptySeq
@@ -182,16 +179,23 @@ fun eval ((ConI(n)), (_)) = IntV(n)
         end
     | eval ((Call(exp1, exp2)), (e : plcVal env)) =
         let
+            val params = 
+                (
+                    case exp2 of 
+                        List (paramsList) => ListV(List.map (fn x => eval(x, e)) paramsList)
+                        | _ => raise Impossible
+                );
+            val newEnv1 = ("$list", params)::e;
             val exp1Val = eval(exp1, e)
         in
             (
                 case exp1Val of
                     Clos(n, s, funExp, closEnv) =>
                         let
-                            val exp2Val = eval(exp2, e);
-                            val newEnv = (s, exp2Val)::(n, exp1Val)::closEnv
+                            val exp2Val = eval(exp2, newEnv1);
+                            val newEnv2 = (s, exp2Val)::(n, exp1Val)::closEnv
                         in
-                            eval(funExp, newEnv)
+                            eval(funExp, newEnv2)
                         end
                     | _ => raise NotAFunc
             )

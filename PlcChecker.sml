@@ -19,7 +19,7 @@ fun teval ((ConI _), _) = IntT
     | teval ((ESeq seq), _) = 
         ( 
             case seq of
-                SeqT t => t
+                SeqT t => SeqT t
                 | _ => raise EmptySeq
         )
     | teval ((Var v), (e : plcType env)) = lookup e v 
@@ -75,7 +75,7 @@ fun teval ((ConI _), _) = IntT
                 | "::" => 
                 (
                     case exp2Type of
-                        ListT([]) => SeqT exp1Type
+                        SeqT(ListT []) => SeqT exp1Type
                         | SeqT t => if exp1Type = t then SeqT t else raise UnknownType
                         | _ => raise UnknownType
                 )
@@ -86,9 +86,9 @@ fun teval ((ConI _), _) = IntT
                         fun isEqType t = 
                         (
                             case t of 
-                        (IntT | BoolT | ListT [] | SeqT IntT | SeqT BoolT | SeqT(ListT [])) => true
-                        | ListT typeList => List.all (fn x => isEqType x) typeList
-                        | _ => false
+                                (IntT | BoolT | ListT [] | SeqT IntT | SeqT BoolT | SeqT(ListT [])) => true
+                                | ListT typeList => List.all (fn x => isEqType x) typeList
+                                | _ => false
                         )
                     in
                         if isEqType exp1Type then BoolT else raise UnknownType
