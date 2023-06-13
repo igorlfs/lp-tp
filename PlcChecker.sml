@@ -31,11 +31,11 @@ fun teval ((ConI _), _) = IntT
         end
     | teval ((Letrec(s1, t1, s2, t2, exp1, exp2)), (e : plcType env)) =
         let
-            val newEnv = (s1, FunT(t2, t1))::(s2, t2)::e;
+            val newEnv = (s1, FunT(t1, t2))::(s2, t1)::e;
             val exp1Type  = teval(exp1, newEnv);
             val exp2Type = teval(exp2, newEnv)
         in
-            if exp1Type = t1 then exp2Type else raise WrongRetType
+            if exp1Type = t2 then exp2Type else raise WrongRetType
         end
     | teval ((Prim1(oper, exp)), (e : plcType env)) =
         let

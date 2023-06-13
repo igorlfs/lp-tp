@@ -3,10 +3,10 @@
 3. <fun> : Int -> Int
 4. Erro desconhecido
 5. Erro desconhecido
-6. OpNonList: tentaiva de se acessar um elemento de uma expressão que não é uma lista
-7. OpNonList: tentaiva de se acessar um elemento de uma expressão que não é uma lista
+6. Erro desconhecido
+7. Erro desconhecido
 8. [1, 2, 3, ] : [Int]
-9. CallTypeMisM: o tipo passado como parâmetro para a função é diferente do tipo que ela espera
+9. ([20, 40, 60, ], [22, 42, 62, ], ) : ([Int], [Int], )
 10. 1 : Int
 11. true : Bool
 12. <fun> : (Int -> Int) -> Int
