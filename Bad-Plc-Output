@@ -1,24 +1,8 @@
-1. Symbol not found.
-2. Plc Checker: Type mismatch in function call.
-3. Plc Checker: Types in comparison are different.
-4. Plc Checker: Types in comparison are different.
-5. Plc Checker: Wrong return type in function.
-6. Plc Checker: 'if' branch types differ.
-7. Plc Checker: 'if' condition not Boolean.
-8. Plc Checker: no Match results.
-9. Plc Checker: 'match' result types differ.
-10. Plc Checker: 'match' condition types differ matching expressions's type.
-11. teval Call: not a function.
-12. Plc Checker: List index out of range.
-13. Plc Checker: Selection with operator # applied to non-list.
-14. Plc Interp: 'hd' empty sequence argument.
-15. Plc Interp: 'tl' empty sequence argument.
-16. Plc Interp: value not found in match.
-1. UnknownType: o tipo da expressão passada é desconhecido e não pode ser verificado
+1. SymbolNotFound: Símbolo não encontrado no ambiente
 2. CallTypeMisM: o tipo passado como parâmetro para a função é diferente do tipo que ela espera
 3. NotEqTypes: os tipos utilizados na comparação são diferentes
 4. NotEqTypes: os tipos utilizados na comparação são diferentes
-5. UnknownType: o tipo da expressão passada é desconhecido e não pode ser verificado
+5. WrongRetType: o tipo de retorno definido na declaração da função não coincide com o tipo retornado pelo corpo da função
 6. DiffBrTypes: os tipos das expressões nos diferentes caminhos do comando if são incompatíveis
 7. IfCondNotBool: a condição do comando if não é do tipo booleano
 8. NoMatchResults: a lista de expressões disponíveis em match é vazia
@@ -27,6 +11,6 @@
 11. NotFunc: o objeto que foi utilizado para se chamar algo não é uma função
 12. ListOutOfRange: foi feita uma tentativa de acessar um elemento fora dos limites de uma lista
 13. OpNonList: tentaiva de se acessar um elemento de uma expressão que não é uma lista
-14. UnknownType: o tipo da expressão passada é desconhecido e não pode ser verificado
-15. UnknownType: o tipo da expressão passada é desconhecido e não pode ser verificado
-16. Erro desconhecido
+14. HDEmptySeq: não é possível acessar a cabeça de uma lista vazia
+15. TLEmptySeq: não é possível acessar a cauda de uma lista vazia
+16. ValueNotFoundInMatch: nenhum valor equivalente à passada foi encontrada na cláusula de casamento
