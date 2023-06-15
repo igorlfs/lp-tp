@@ -121,7 +121,7 @@ fun teval ((ConI _), _) = IntT
                         val firstOptionExpType = hd optionsExpsTypes;
                         val allOptionsExpsSameType = List.all (fn x => x = firstOptionExpType) optionsExpsTypes
                     in
-                        if allOptionsExpsSameType then exp1Type else raise MatchCondTypesDiff
+                        if allOptionsExpsSameType then firstOptionExpType else raise MatchCondTypesDiff
                     end
                 else raise MatchResTypeDiff
             end
@@ -131,22 +131,22 @@ fun teval ((ConI _), _) = IntT
             val exp2Type = teval(exp2, e)
         in
             case exp1Type of
-                FunT(t1, t2) => if t1 <> exp2Type then raise CallTypeMisM else t2
+                FunT(t1, t2) => if t1 = exp2Type then t2 else exp2Type
                 | _ => raise NotFunc
         end
-    | teval ((List expList), (e : plcType env)) = 
+    | teval ((List(expList)), (e : plcType env)) = 
         let
             val listTypes = List.map (fn x => teval(x, e)) expList
         in
-            ListT listTypes
+            ListT(listTypes)
         end    
     | teval ((Item(n, exp)), (e : plcType env)) =
         let 
             val expType = teval(exp, e);
         in
             case expType of
-                ListT[] => raise ListOutOfRange
-                | ListT listTypes => 
+                ListT([]) => raise ListOutOfRange
+                | ListT(listTypes) => 
                     if n > (List.length listTypes) orelse n < 1 then raise ListOutOfRange else List.nth(listTypes, n - 1)
                 | _ => raise OpNonList
         end

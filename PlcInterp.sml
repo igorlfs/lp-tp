@@ -181,18 +181,13 @@ fun eval ((ConI(n)), (_)) = IntV(n)
     | eval ((Call(exp1, exp2)), (e : plcVal env)) =
         let
             val exp1Val = eval(exp1, e);
-            fun getArgs (List (x::[])) = [eval(x,e)]
-                | getArgs (List (x::xs)) = [eval(x, e)] @ getArgs (List xs)
-                | getArgs (exp) = [eval(exp, e)]
-            val nEnv = [("$list", ListV (getArgs exp2))] @ e
+            val exp2Val = eval(exp2, e);
         in
             (
                 case exp1Val of
                     Clos(n, s, funExp, closEnv) =>
                         let
-                            val exp2Val = eval(exp2, nEnv);
                             val newEnv = (s, exp2Val)::(n, exp1Val)::closEnv
-
                         in
                             eval(funExp, newEnv)
                         end
@@ -211,7 +206,7 @@ fun eval ((ConI(n)), (_)) = IntV(n)
         in
             case expVal of 
                 ListV([]) => raise Impossible
-                | ListV(l) => List.nth(l, n) 
+                | ListV(l) => List.nth(l, n - 1) 
                 | _ => raise Impossible
         end
     | eval((Anon(t, s, exp)), (e : plcVal env)) = Clos("", s, exp, e)
