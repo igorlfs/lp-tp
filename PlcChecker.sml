@@ -121,7 +121,10 @@ fun teval ((ConI _), _) = IntT
                         val firstOptionExpType = hd optionsExpsTypes;
                         val allOptionsExpsSameType = List.all (fn x => x = firstOptionExpType) optionsExpsTypes
                     in
-                        if allOptionsExpsSameType then firstOptionExpType else raise MatchCondTypesDiff
+                        if allOptionsExpsSameType then 
+                            if exp1Type = firstOptionExpType then firstOptionExpType
+                                else raise MatchCondTypesDiff
+                            else raise MatchResTypeDiff
                     end
                 else raise MatchResTypeDiff
             end
@@ -131,7 +134,7 @@ fun teval ((ConI _), _) = IntT
             val exp2Type = teval(exp2, e)
         in
             case exp1Type of
-                FunT(t1, t2) => if t1 = exp2Type then t2 else exp2Type
+                FunT(t1, t2) => if t1 = exp2Type then t2 else raise CallTypeMisM
                 | _ => raise NotFunc
         end
     | teval ((List(expList)), (e : plcType env)) = 

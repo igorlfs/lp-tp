@@ -23,7 +23,7 @@
 23. 21 : Int
 24. 9 : Int
 25. (4, 7, ) : (Int, Int, )
-26. CallTypeMisM: o tipo passado como parâmetro para a função é diferente do tipo que ela espera
+26. 30 : Int
 27. 9 : Int
 28. 10 : Int
 29. 1 : Int
