@@ -117,12 +117,14 @@ fun teval ((ConI _), _) = IntT
                 if allOptionsSameType then 
                     let
                         val exp1Type = teval(exp1, e);
-                        val optionsExpsTypes = map (fn tup => teval((#2 tup), e)) optionsList;
+                        fun validateExpType (SOME(exp)) = teval(exp, e)
+                            | validateExpType (NONE) = exp1Type (* como caso _ nao  importa, consideramos como tipo igual ao da expressão original*)
+                        val optionsExpsTypes = map (fn tup => validateExpType(#1 tup)) optionsList;
                         val firstOptionExpType = hd optionsExpsTypes;
                         val allOptionsExpsSameType = List.all (fn x => x = firstOptionExpType) optionsExpsTypes
                     in
                         if allOptionsExpsSameType then 
-                            if exp1Type = firstOptionExpType then firstOptionExpType
+                            if exp1Type = firstOptionExpType then firstOptionType
                                 else raise MatchCondTypesDiff
                             else raise MatchResTypeDiff
                     end
