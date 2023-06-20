@@ -1,0 +1,16 @@
+1. SymbolNotFound: Símbolo não encontrado no ambiente
+2. CallTypeMisM: o tipo passado como parâmetro para a função é diferente do tipo que ela espera
+3. NotEqTypes: os tipos utilizados na comparação são diferentes
+4. NotEqTypes: os tipos utilizados na comparação são diferentes
+5. WrongRetType: o tipo de retorno definido na declaração da função não coincide com o tipo retornado pelo corpo da função
+6. DiffBrTypes: os tipos das expressões nos diferentes caminhos do comando if são incompatíveis
+7. IfCondNotBool: a condição do comando if não é do tipo booleano
+8. NoMatchResults: a lista de expressões disponíveis em match é vazia
+9. MatchResTypeDiff: o tipo de retorno de um ou mais casos na expressão match é diferente dos demais casos
+10. MatchResTypeDiff: o tipo de retorno de um ou mais casos na expressão match é diferente dos demais casos
+11. NotFunc: o objeto que foi utilizado para se chamar algo não é uma função
+12. ListOutOfRange: foi feita uma tentativa de acessar um elemento fora dos limites de uma lista
+13. OpNonList: tentaiva de se acessar um elemento de uma expressão que não é uma lista
+14. HDEmptySeq: não é possível acessar a cabeça de uma lista vazia
+15. TLEmptySeq: não é possível acessar a cauda de uma lista vazia
+16. ValueNotFoundInMatch: nenhum valor equivalente à passada foi encontrada na cláusula de casamento
