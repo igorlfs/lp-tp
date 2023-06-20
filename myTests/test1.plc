@@ -1,0 +1,9 @@
+var vasco = 10;
+fun rec fib(Int n): Int =
+    match n with
+    | 0 -> 1
+    | 1 -> 1
+    | _ -> fib(n-1) + fib(n-2)
+    end
+;
+fib(vasco)
