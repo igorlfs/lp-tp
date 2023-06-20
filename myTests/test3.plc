@@ -1,7 +1,0 @@
-fun f(Int n) = {
-    if n = 0 then
-        n*n 
-    else 
-        true
-};
-f(8)

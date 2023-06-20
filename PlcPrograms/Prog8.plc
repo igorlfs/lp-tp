@@ -1,4 +1,0 @@
-var a = 5;
-var b = a + 1;
-fun f(Int x) = x + b;
-f(3)
